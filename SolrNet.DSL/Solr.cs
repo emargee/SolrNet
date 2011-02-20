@@ -15,13 +15,13 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Rhino.Commons;
 using SolrNet.Commands;
 using SolrNet.Commands.Parameters;
 using SolrNet.DSL.Impl;
 using SolrNet.Impl;
-using SolrNet.Utils;
 
 namespace SolrNet.DSL {
     /// <summary>
@@ -59,8 +59,8 @@ namespace SolrNet.DSL {
         /// <typeparam name="T"></typeparam>
         /// <param name="documents"></param>
         public static void Add<T>(IEnumerable<T> documents) {
-            var docs = Func.Select(documents, d => new KeyValuePair<T, double?>(d, null));
-            var cmd = new AddCommand<T>(docs, ServiceLocator.Current.GetInstance<ISolrDocumentSerializer<T>>());
+            var docs = documents.Select(d => new KeyValuePair<T, double?>(d, null));
+            var cmd = new AddCommand<T>(docs, ServiceLocator.Current.GetInstance<ISolrDocumentSerializer<T>>(), null);
             cmd.Execute(Connection);
         }
 

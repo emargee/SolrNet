@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using HttpWebAdapters;
 using SolrNet;
 using SolrNet.Exceptions;
 using SolrNet.Impl;
@@ -29,7 +28,6 @@ namespace StructureMap.SolrNetIntegration
             For(typeof(ISolrQueryExecuter<>)).Use(typeof(SolrQueryExecuter<>));
             For<ISolrDocumentPropertyVisitor>().Use<DefaultDocumentVisitor>();
             For<IMappingValidator>().Use<MappingValidator>();
-            For<IHttpWebRequestFactory>().Use<HttpWebRequestFactory>();
 
             RegisterParsers();
             RegisterValidationRules();
@@ -90,6 +88,7 @@ namespace StructureMap.SolrNetIntegration
             For(typeof(ISolrQueryResultParser<>)).Use(typeof(SolrQueryResultParser<>));
             For<ISolrFieldParser>().Use<DefaultFieldParser>();
             For<ISolrSchemaParser>().Use<SolrSchemaParser>();
+            For<ISolrDIHStatusParser>().Use<SolrDIHStatusParser>();
         }
 
         /// <summary>

@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Xml;
+using System.Xml.Linq;
 using SolrNet.Commands;
 using SolrNet.Commands.Parameters;
 using SolrNet.Schema;
@@ -33,14 +33,16 @@ namespace SolrNet.Impl {
         private readonly ISolrSchemaParser schemaParser;
         private readonly ISolrHeaderResponseParser headerParser;
         private readonly ISolrQuerySerializer querySerializer;
+        private readonly ISolrDIHStatusParser dihStatusParser;
 
-        public SolrBasicServer(ISolrConnection connection, ISolrQueryExecuter<T> queryExecuter, ISolrDocumentSerializer<T> documentSerializer, ISolrSchemaParser schemaParser, ISolrHeaderResponseParser headerParser, ISolrQuerySerializer querySerializer) {
+        public SolrBasicServer(ISolrConnection connection, ISolrQueryExecuter<T> queryExecuter, ISolrDocumentSerializer<T> documentSerializer, ISolrSchemaParser schemaParser, ISolrHeaderResponseParser headerParser, ISolrQuerySerializer querySerializer, ISolrDIHStatusParser dihStatusParser) {
             this.connection = connection;
             this.queryExecuter = queryExecuter;
             this.documentSerializer = documentSerializer;
             this.schemaParser = schemaParser;
             this.headerParser = headerParser;
             this.querySerializer = querySerializer;
+            this.dihStatusParser = dihStatusParser;
         }
 
         public ResponseHeader Commit(CommitOptions options) {
@@ -69,8 +71,8 @@ namespace SolrNet.Impl {
             return SendAndParseHeader(new RollbackCommand());
         }
 
-        public ResponseHeader AddWithBoost(IEnumerable<KeyValuePair<T, double?>> docs) {
-            var cmd = new AddCommand<T>(docs, documentSerializer);
+        public ResponseHeader AddWithBoost(IEnumerable<KeyValuePair<T, double?>> docs, AddParameters parameters) {
+            var cmd = new AddCommand<T>(docs, documentSerializer, parameters);
             return SendAndParseHeader(cmd);
         }
 
@@ -89,8 +91,7 @@ namespace SolrNet.Impl {
 
         public ResponseHeader SendAndParseHeader(ISolrCommand cmd) {
             var r = Send(cmd);
-            var xml = new XmlDocument();
-            xml.LoadXml(r);
+            var xml = XDocument.Parse(r);
             return headerParser.Parse(xml);
         }
 
@@ -100,9 +101,14 @@ namespace SolrNet.Impl {
 
         public SolrSchema GetSchema() {
             string schemaXml = new GetSchemaCommand().Execute(connection);
-            var schema = new XmlDocument();
-            schema.LoadXml(schemaXml);
+            var schema = XDocument.Parse(schemaXml);
             return schemaParser.Parse(schema);
+        }
+
+        public SolrDIHStatus GetDIHStatus(KeyValuePair<string, string> options) {
+            var response = connection.Get("/dataimport", null);
+            var dihstatus = XDocument.Parse(response);
+            return dihStatusParser.Parse(dihstatus);
         }
     }
 }

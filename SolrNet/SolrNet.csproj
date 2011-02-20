@@ -15,7 +15,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -63,9 +63,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractSolrQuery.cs" />
+    <Compile Include="AddParameters.cs" />
     <Compile Include="CollapsedDocument.cs" />
     <Compile Include="Commands\GetSchemaCommand.cs" />
     <Compile Include="Commands\Parameters\CollapseParameters.cs" />
@@ -78,6 +80,9 @@
     <Compile Include="CollapseResults.cs" />
     <Compile Include="Commands\RollbackCommand.cs" />
     <Compile Include="DateFacetingResult.cs" />
+    <Compile Include="Impl\ISolrDIHStatusParser.cs" />
+    <Compile Include="SolrDIHStatus.cs" />
+    <Compile Include="Impl\SolrDIHStatusParser.cs" />
     <Compile Include="Exceptions\TypeNotSupportedException.cs" />
     <Compile Include="FacetDateOther.cs" />
     <Compile Include="Impl\DocumentPropertyVisitors\AggregateDocumentVisitor.cs" />
@@ -244,7 +249,6 @@
     <Compile Include="Startup.cs" />
     <Compile Include="StatsResult.cs" />
     <Compile Include="Utils\Container.cs" />
-    <Compile Include="Utils\Func.cs" />
     <Compile Include="Exceptions\InvalidURLException.cs" />
     <Compile Include="ISolrConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

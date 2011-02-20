@@ -16,8 +16,9 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Xml;
-using SolrNet.Utils;
+using System.Xml.Linq;
 
 namespace SolrNet.Impl.FieldParsers {
     /// <summary>
@@ -32,13 +33,13 @@ namespace SolrNet.Impl.FieldParsers {
             return t == typeof (DateTime);
         }
 
-        public object Parse(XmlNode field, Type t) {
-            return ParseDate(field.InnerText);
+        public object Parse(XElement field, Type t) {
+            return ParseDate(field.Value);
         }
 
         public DateTime ParseDate(string s) {
             var p = s.Split('-');
-            s = p[0].PadLeft(4, '0') + '-' + string.Join("-", Func.ToArray(Func.Tail(p)));
+            s = p[0].PadLeft(4, '0') + '-' + string.Join("-", p.Skip(1).ToArray());
             return DateTime.ParseExact(s, "yyyy-MM-dd'T'HH:mm:ss.FFF'Z'", CultureInfo.InvariantCulture);
         }
     }

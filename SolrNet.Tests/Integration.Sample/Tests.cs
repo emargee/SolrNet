@@ -48,8 +48,10 @@ namespace SolrNet.Tests.Integration.Sample {
 
         [Test]
         public void Add_then_query() {
+            Guid guid = new Guid("{78D734ED-12F8-44E0-8AA3-8CA3F353998D}");
             var p = new Product {
                 Id = "SP2514N",
+                Guid = guid,
                 Name = "Samsuñg SpinPoint P120 SP2514N - hárd drívè - 250 GB - ÁTÀ-133",
                 // testing UTF
                 Manufacturer = "Samsung Electronics Co. Ltd.",
@@ -71,6 +73,9 @@ namespace SolrNet.Tests.Integration.Sample {
                 Price = 92,
                 Popularity = 6,
                 InStock = true,
+                DynCategories = new Dictionary<string, ICollection<string>> {
+                    {"t", new[] {"something"}},
+                }
             };
 
             var solr = ServiceLocator.Current.GetInstance<ISolrOperations<Product>>();
@@ -82,18 +87,21 @@ namespace SolrNet.Tests.Integration.Sample {
             var products = solr.Query(new SolrQueryByRange<decimal>("price", 10m, 100m).Boost(2));
             Assert.AreEqual(1, products.Count);
             Assert.AreEqual("SP2514N", products[0].Id);
+            Assert.AreEqual(guid, products[0].Guid);
             Assert.AreEqual(92m, products[0].Price);
             Assert.IsNotNull(products[0].Prices);
             Assert.AreEqual(2, products[0].Prices.Count);
             Assert.AreEqual(150m, products[0].Prices["regular"]);
             Assert.AreEqual(100m, products[0].Prices["afterrebate"]);
+            Assert.IsNotNull(products.Header);
+            Assert.GreaterThan(products.Header.QTime, 0);
+            Console.WriteLine("QTime is {0}", products.Header.QTime);
         }
 
         [Test]
         public void DeleteByIdAndOrQuery() {
             var solr = ServiceLocator.Current.GetInstance<ISolrOperations<Product>>();
 
-            #region Delete test data
             var products = new List<Product> 
             {
                     new Product
@@ -160,7 +168,6 @@ namespace SolrNet.Tests.Integration.Sample {
                         InStock = false,
                     }
             };
-            #endregion
 
             solr.Add(products);
             solr.Commit();

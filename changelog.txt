@@ -1,3 +1,19 @@
+- Fixed NRE with facet.missing=true
+- Null values in range queries now translated to *
+- Fixed LocalParams + per-field facet parameters
+- Added Rollback (missing in top-level interface)
+- Added CommitWithin and Overwrite parameters for document add
+- Upgraded to .NET 3.5
+- Minor breaking change: removed SolrConnection constructor with IHttpWebRequestFactory parameter. Made IHttpWebRequestFactory a property.
+- Added Autofac integration module
+
+0.3.0 (2010-12-05)
+===
+
+- NuGet packages
+- Upgraded to Ninject 2.1.0.76
+- Upgraded to Windsor 2.5.2
+- Signed assemblies
 - Fixed support for readonly and writeonly properties in document type
 - Fixed issue #113: duplicate add in NHibernate integration
 - Fixed bug with attributes not being picked up by a class higher in the class hierarchy
@@ -6,7 +22,7 @@
 - Improved response parsing performance
 - Fixed issue #93: nullable DateTime range queries
 - Added support for multi-core in StructureMap registry
-- Upgraded to StructureMap 2.6
+- Upgraded to StructureMap 2.6.1
 
 0.3.0 beta1 (2010-06-08)
 ===

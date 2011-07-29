@@ -33,7 +33,7 @@ namespace SolrNet.Tests
             var conn = mocks.StrictMock<ISolrConnection>();
             With.Mocks(mocks).Expecting(delegate
             {
-                Expect.Call(conn.Get("/admin/file", new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("file", "schema.xml") })).Repeat.Once().Return("");
+                Expect.Call(conn.Get("/admin/file", new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("file", "schema.xml") })).Repeat.Once().Return(new SolrResponse("eTag",""));
             }).Verify(delegate
             {
                 var cmd = new GetSchemaCommand();

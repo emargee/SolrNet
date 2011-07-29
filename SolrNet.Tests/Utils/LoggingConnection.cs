@@ -36,7 +36,7 @@ namespace SolrNet.Tests.Utils {
             return conn.PostStream(relativeUrl, contentType, content, parameters);
         }
 
-        public string Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters) {
+        public SolrResponse Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters) {
             Console.WriteLine("Getting");
             var r = conn.Get(relativeUrl, parameters);
             Console.WriteLine("Result is:\n" + r);

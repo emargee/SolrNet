@@ -241,7 +241,7 @@ namespace SolrNet.DSL.Tests {
                 .Expecting(() => Expect.Call(conn.Get(null, null))
                                      .IgnoreArguments()
                                      .Repeat.Once()
-                                     .Return(response))
+                                     .Return(new SolrResponse("eTag",response)))
                 .Verify(() => {
                     Solr.Connection = conn;
                     var r = Solr.Query<TestDocument>("");
@@ -254,12 +254,12 @@ namespace SolrNet.DSL.Tests {
             var mocks = new MockRepository();
             var conn = mocks.StrictMock<ISolrConnection>();
             With.Mocks(mocks)
-                .Expecting(() => Expect.Call(conn.Get(null, null)).IgnoreArguments().Repeat.Once().Return(
+                .Expecting(() => Expect.Call(conn.Get(null, null)).IgnoreArguments().Repeat.Once().Return(new SolrResponse("eTag",
                                      @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <response>
 <lst name=""responseHeader""><int name=""status"">0</int><int name=""QTime"">0</int><lst name=""params""><str name=""q"">id:123456</str><str name=""?""/><str name=""version"">2.2</str></lst></lst><result name=""response"" numFound=""1"" start=""0""><doc><str name=""advancedview""/><str name=""basicview""/><int name=""id"">123456</int></doc></result>
 </response>
-"))
+")))
                 .Verify(() => {
                     Solr.Connection = conn;
                     Solr.Query<TestDocument>("");
@@ -375,7 +375,7 @@ namespace SolrNet.DSL.Tests {
                 .Expecting(() => Expect.Call(conn.Get(null, null))
                                      .IgnoreArguments()
                                      .Repeat.Once()
-                                     .Return(response))
+                                     .Return(new SolrResponse("eTag", response)))
                 .Verify(() => {
                     Solr.Connection = conn;
                     var r = Solr.Query<TestDocument>("", 10, 20);
@@ -391,7 +391,7 @@ namespace SolrNet.DSL.Tests {
                 .Expecting(() => Expect.Call(conn.Get(null, null))
                                      .IgnoreArguments()
                                      .Repeat.Once()
-                                     .Return(response))
+                                     .Return(new SolrResponse("eTag", response)))
                 .Verify(() => {
                     Solr.Connection = conn;
                     var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithFacetField("modeldesc").Run();
@@ -406,7 +406,7 @@ namespace SolrNet.DSL.Tests {
                 .Expecting(() => Expect.Call(conn.Get(null, null))
                                      .IgnoreArguments()
                                      .Repeat.Once()
-                                     .Return(response))
+                                     .Return(new SolrResponse("eTag", response)))
                 .Verify(() => {
                     Solr.Connection = conn;
                     var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw")
@@ -429,7 +429,7 @@ namespace SolrNet.DSL.Tests {
                 .Expecting(() => Expect.Call(conn.Get(null, null))
                                      .IgnoreArguments()
                                      .Repeat.Once()
-                                     .Return(response))
+                                     .Return(new SolrResponse("eTag", response)))
                 .Verify(() => {
                     Solr.Connection = conn;
                     var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithFacetQuery("").Run();
@@ -444,7 +444,7 @@ namespace SolrNet.DSL.Tests {
                 .Expecting(() => Expect.Call(conn.Get(null, null))
                                      .IgnoreArguments()
                                      .Repeat.Once()
-                                     .Return(response))
+                                     .Return(new SolrResponse("eTag", response)))
                 .Verify(() => {
                     Solr.Connection = conn;
                     var r = Solr.Query<TestDocument>().By("makedesc").Is("bmw").WithFacetQuery(new SolrQuery("")).Run();

@@ -58,12 +58,12 @@ namespace SolrNet.Tests {
             return DumpParams(new List<KeyValuePair<string, string>>(parameters));
         }
 
-        public virtual string Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters) {
+        public virtual SolrResponse Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters) {
             var param = new List<KeyValuePair<string, string>>(parameters);
             Assert.AreEqual(expectations.Count, param.Count, "Expected {0} parameters but found {1}.\nActual parameters:\n {2}", expectations.Count, param.Count, DumpParams(param));
             foreach (var p in param)
                 Assert.IsTrue(expectations.Contains(p), "Parameter {0}={1}, not found in expectations.\nCurrent expectations are:\n {2}", p.Key, p.Value, DumpParams(expectations));
-            return response;
+            return new SolrResponse("eTag",response);
         }
     }
 }

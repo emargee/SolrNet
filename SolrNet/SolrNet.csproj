@@ -258,6 +258,7 @@
     <Compile Include="Impl\SolrBasicServer.cs" />
     <Compile Include="Attributes\SolrUniqueKeyAttribute.cs" />
     <Compile Include="Impl\SolrServer.cs" />
+    <Compile Include="SolrResponse.cs" />
     <Compile Include="SortOrder.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="StatsResult.cs" />

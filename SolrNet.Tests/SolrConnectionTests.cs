@@ -125,7 +125,7 @@ namespace SolrNet.Tests {
                     .Return(CompressionUtils.GzipCompressStream("Testing compression"));
             }).Verify(delegate {
                 var conn = new SolrConnection("http://localhost") { HttpWebRequestFactory = reqFactory };
-                Assert.AreEqual("Testing compression", conn.Get("", new Dictionary<string, string>()));
+                Assert.AreEqual("Testing compression", conn.Get("", new Dictionary<string, string>()).Data);
             });
         }
 
@@ -158,7 +158,7 @@ namespace SolrNet.Tests {
                     .Return(CompressionUtils.DeflateCompressStream("Testing compression"));
             }).Verify(delegate {
                 var conn = new SolrConnection("http://localhost") { HttpWebRequestFactory = reqFactory };
-                Assert.AreEqual("Testing compression", conn.Get("", new Dictionary<string, string>()));
+                Assert.AreEqual("Testing compression", conn.Get("", new Dictionary<string, string>()).Data);
             });
         }
 

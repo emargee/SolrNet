@@ -134,7 +134,7 @@ namespace SolrNet.Impl {
             return new KeyValuePair<T1, T2>(a, b);
         }
 
-        public string Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters) {
+        public SolrResponse Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters) {
             var u = new UriBuilder(serverURL);
             u.Path += relativeUrl;
             u.Query = GetQuery(parameters);
@@ -158,13 +158,14 @@ namespace SolrNet.Impl {
                 var response = GetResponse(request);
                 if (response.ETag != null)
                     Cache.Add(new SolrCacheEntity(u.Uri.ToString(), response.ETag, response.Data));
-                return response.Data;
+                return response;
             } catch (WebException e) {
                 if (e.Response != null) {
                     using (e.Response) {
                         var r = new HttpWebResponseAdapter(e.Response);
-                        if (r.StatusCode == HttpStatusCode.NotModified) {
-                            return cached.Data;
+                        if (r.StatusCode == HttpStatusCode.NotModified) 
+                        {
+                            return new SolrResponse(cached.ETag,cached.Data);
                         }
                         using (var s = e.Response.GetResponseStream())
                         using (var sr = new StreamReader(s)) {
@@ -231,15 +232,6 @@ namespace SolrNet.Impl {
             if (response.ContentEncoding.ToLower().Contains("deflate"))
                 return new DeflateStream(responseStream, CompressionMode.Decompress);
             return responseStream;
-        }
-
-        private struct SolrResponse {
-            public string ETag { get; private set; }
-            public string Data { get; private set; }
-            public SolrResponse(string eTag, string data) : this() {
-                ETag = eTag;
-                Data = data;
-            }
         }
 
         private Encoding TryGetEncoding(IHttpWebResponse response) {

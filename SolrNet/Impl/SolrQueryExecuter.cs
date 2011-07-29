@@ -382,8 +382,9 @@ namespace SolrNet.Impl {
         /// <returns>query results</returns>
         public ISolrQueryResults<T> Execute(ISolrQuery q, QueryOptions options) {
             var param = GetAllParameters(q, options);
-            string r = connection.Get(Handler, param);
-            var qr = resultParser.Parse(r);
+            var response = connection.Get(Handler, param);
+            var qr = resultParser.Parse(response.Data);
+            qr.ETag = response.ETag;
             return qr;
         }
     }

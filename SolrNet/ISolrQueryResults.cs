@@ -44,6 +44,11 @@ namespace SolrNet {
 		IDictionary<string, ICollection<KeyValuePair<string, int>>> FacetFields { get; set; }
 
         /// <summary>
+        /// Server response eTag value
+        /// </summary>
+        string ETag { get; set; }
+
+        /// <summary>
         /// Query response header
         /// </summary>
 		ResponseHeader Header { get; set; }

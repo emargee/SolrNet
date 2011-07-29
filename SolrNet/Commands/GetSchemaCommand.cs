@@ -29,7 +29,7 @@ namespace SolrNet.Commands {
         /// <param name="connection"></param>
         /// <returns></returns>
         public string Execute(ISolrConnection connection) {
-            return connection.Get("/admin/file", new[] {new KeyValuePair<string, string>("file", "schema.xml")});
+            return connection.Get("/admin/file", new[] {new KeyValuePair<string, string>("file", "schema.xml")}).Data;
         }
     }
 }

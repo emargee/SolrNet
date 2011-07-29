@@ -181,6 +181,7 @@ namespace SolrNet.Impl {
 
 		public IDictionary<string, IList<Pivot>> FacetPivots { get; set; }
 
+        public string ETag { get; set; }
 		public ResponseHeader Header { get; set;}
 
 		public IDictionary<string, IDictionary<string, ICollection<string>>> Highlights { get; set; }

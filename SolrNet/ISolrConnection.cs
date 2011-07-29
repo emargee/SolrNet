@@ -46,6 +46,6 @@ namespace SolrNet {
         /// <param name="relativeUrl">Path to get from</param>
         /// <param name="parameters">Query string parameters</param>
         /// <returns></returns>
-        string Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters);
+        SolrResponse Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters);
     }
 }

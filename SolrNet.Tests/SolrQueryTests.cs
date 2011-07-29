@@ -33,7 +33,7 @@ namespace SolrNet.Tests {
 				Expect.Call(connection.Get(null, null))
                     .IgnoreArguments()
                     .Repeat.Once()
-                    .Return("");
+                    .Return(new SolrResponse("eTag",""));
 				Expect.Call(parser.Parse(null))
                     .IgnoreArguments()
                     .Repeat.Once()

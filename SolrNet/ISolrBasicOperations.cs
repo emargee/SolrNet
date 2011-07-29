@@ -15,6 +15,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.IO;
 using SolrNet.Commands.Parameters;
 
 namespace SolrNet {
@@ -22,7 +23,7 @@ namespace SolrNet {
     /// Solr operations without convenience overloads
     /// </summary>
     /// <typeparam name="T">Document type</typeparam>
-    public interface ISolrBasicOperations<T>: ISolrBasicReadOnlyOperations<T> {
+    public interface ISolrBasicOperations<T> : ISolrBasicReadOnlyOperations<T> {
         /// <summary>
         /// Commits posted documents
         /// </summary>
@@ -49,6 +50,13 @@ namespace SolrNet {
         ResponseHeader AddWithBoost(IEnumerable<KeyValuePair<T, double?>> docs, AddParameters parameters);
 
         /// <summary>
+        /// Adds / updates the extracted contents of a richdocument
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        ExtractResponse Extract(ExtractParameters parameters);
+
+        /// <summary>
         /// Deletes all documents that match the given id's or the query
         /// </summary>
         /// <param name="ids">document ids to delete</param>
@@ -69,5 +77,12 @@ namespace SolrNet {
         /// <param name="cmd"></param>
         /// <returns></returns>
         ResponseHeader SendAndParseHeader(ISolrCommand cmd);
+
+        /// <summary>
+        /// Sends a custom command, returns parsed extract response from xml response
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns></returns>
+        ExtractResponse SendAndParseExtract(ISolrCommand cmd);
     }
 }

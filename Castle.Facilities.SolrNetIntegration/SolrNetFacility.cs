@@ -87,10 +87,12 @@ namespace Castle.Facilities.SolrNetIntegration {
                 typeof (SpellCheckResponseParser<>),
                 typeof (StatsResponseParser<>),
                 typeof (CollapseResponseParser<>),
+                typeof(GroupingResponseParser<>)
             }) {
                 Kernel.Register(Component.For(typeof (ISolrResponseParser<>)).ImplementedBy(parserType));
             }
             Kernel.Register(Component.For<ISolrHeaderResponseParser>().ImplementedBy<HeaderResponseParser<string>>());
+            Kernel.Register(Component.For<ISolrExtractResponseParser>().ImplementedBy<ExtractResponseParser>());
             foreach (var validationRule in new[] {
                 typeof(MappedPropertiesIsInSolrSchemaRule),
                 typeof(RequiredFieldsAreMappedRule),

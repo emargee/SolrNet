@@ -77,6 +77,7 @@ namespace StructureMap.SolrNetIntegration
                                     typeof(SpellCheckResponseParser<>),
                                     typeof(StatsResponseParser<>),
                                     typeof(CollapseResponseParser<>),
+                                    typeof(GroupingResponseParser<>)
                                 };
 
             foreach (var p in parsers)
@@ -85,6 +86,7 @@ namespace StructureMap.SolrNetIntegration
             }
 
             For<ISolrHeaderResponseParser>().Use<HeaderResponseParser<string>>();
+            For<ISolrExtractResponseParser>().Use<ExtractResponseParser>();
             For(typeof(ISolrQueryResultParser<>)).Use(typeof(SolrQueryResultParser<>));
             For<ISolrFieldParser>().Use<DefaultFieldParser>();
             For<ISolrSchemaParser>().Use<SolrSchemaParser>();

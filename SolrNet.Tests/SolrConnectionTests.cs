@@ -36,7 +36,7 @@ namespace SolrNet.Tests {
 		[Test]
 		[Category("Integration")]
 		[Ignore]
-		public void ActualConnectionTest() {
+		public void ActualConnection() {
             var conn = new SolrConnection(solrURL) { HttpWebRequestFactory = new HttpWebRequestFactory() };
 			var p = new Dictionary<string, string>();
 			p["version"] = "2.1";
@@ -47,15 +47,20 @@ namespace SolrNet.Tests {
 
 		[Test]
 		[Category("Integration")]
-		[ExpectedException(typeof (InvalidFieldException))]
 		[Ignore]
-		public void ActualInvalidFieldException() {
+		public void ActualConnectionWithException() {
             var conn = new SolrConnection(solrURL);
 			var p = new Dictionary<string, string>();
 			p["version"] = "2.1";
 			p["indent"] = "on";
 			p["q"] = "idq:123";
-			Console.WriteLine(conn.Get("/select/", p));
+            try {
+                conn.Get("/select/", p);
+                Assert.Fail("Should have thrown");
+            } catch (SolrConnectionException e) {
+                Console.WriteLine(e);
+                Console.WriteLine(e.Url);
+            }
 		}
 
 		[Test]
@@ -219,10 +224,12 @@ namespace SolrNet.Tests {
 			var reqFactory = mocks.StrictMock<IHttpWebRequestFactory>();
 			var request = mocks.DynamicMock<IHttpWebRequest>();
 			With.Mocks(mocks).Expecting(delegate {
+                var uri = new Uri("http://lalala:12345/update");
 				Expect.Call(request.GetRequestStream())
                     .Repeat.Once()
                     .Throw(new WebException());
-				Expect.Call(reqFactory.Create(new Uri("http://lalala:12345/update")))
+                Expect.Call(request.RequestUri).Repeat.Once().Return(uri);
+				Expect.Call(reqFactory.Create(uri))
                     .IgnoreArguments()
                     .Repeat.Once()
                     .Return(request);
@@ -250,7 +257,7 @@ namespace SolrNet.Tests {
 				Expect.Call(request.GetRequestStream())
                     .Repeat.Once()
                     .Return(new MemoryStream());
-				Expect.Call(reqFactory.Create(new Uri("https://pepe")))
+				Expect.Call(reqFactory.Create(new Uri("https://pepe/?version=2.2")))
                     .Repeat.Once()
                     .Return(request);
 				request.Method = HttpWebRequestMethod.POST;
@@ -267,30 +274,6 @@ namespace SolrNet.Tests {
 			}).Verify(delegate {
                 var conn = new SolrConnection("https://pepe") { HttpWebRequestFactory = reqFactory };
 				conn.Post("", "");
-			});
-		}
-
-		[Test]
-		[ExpectedException(typeof (InvalidFieldException))]
-		public void UndefinedFieldQueryError_ShouldThrow() {
-			var mocks = new MockRepository();
-			var reqFactory = mocks.StrictMock<IHttpWebRequestFactory>();
-			var request = mocks.DynamicMock<IHttpWebRequest>();
-			With.Mocks(mocks).Expecting(delegate {
-				Expect.Call(reqFactory.Create(new UriBuilder().Uri))
-                    .IgnoreArguments()
-                    .Repeat.Once()
-                    .Return(request);
-                Expect.Call(request.Headers)
-                    .Repeat.Any()
-                    .Return(new WebHeaderCollection());
-				var r = new WebResponseStub {StatusCode = HttpStatusCode.BadRequest};
-				Expect.Call(request.GetResponse())
-                    .Repeat.Once()
-					.Throw(new WebException("(400) Bad Request", new ApplicationException(), WebExceptionStatus.ProtocolError, r));
-			}).Verify(delegate {
-                var conn = new SolrConnection("https://pepe") { HttpWebRequestFactory = reqFactory };
-				conn.Get("", new Dictionary<string, string>());
 			});
 		}
 

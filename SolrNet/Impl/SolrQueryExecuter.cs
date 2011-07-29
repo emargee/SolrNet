@@ -40,12 +40,20 @@ namespace SolrNet.Impl {
 
         public static readonly int ConstDefaultRows = 100000000;
 
+        public static readonly string DefaultHandler = "/select";
+
+        /// <summary>
+        /// Request handler to use. By default "/select"
+        /// </summary>
+        public string Handler { get; set; }
+
         public SolrQueryExecuter(ISolrQueryResultParser<T> resultParser, ISolrConnection connection, ISolrQuerySerializer querySerializer, ISolrFacetQuerySerializer facetQuerySerializer) {
             this.resultParser = resultParser;
             this.connection = connection;
             this.querySerializer = querySerializer;
             this.facetQuerySerializer = facetQuerySerializer;
             DefaultRows = ConstDefaultRows;
+            Handler = DefaultHandler;
         }
 
         public KeyValuePair<T1, T2> KVP<T1, T2>(T1 a, T2 b) {
@@ -91,6 +99,10 @@ namespace SolrNet.Impl {
 
                 foreach (var p in GetCollapseQueryOptions(Options))
                     yield return p;
+
+				//GetGroupingQueryOptions
+				foreach (var p in GetGroupingQueryOptions(Options))
+					yield return p;
 
                 if (Options.ExtraParams != null)
                     foreach (var p in Options.ExtraParams)
@@ -202,10 +214,10 @@ namespace SolrNet.Impl {
                         param["hl.alternateField"] = h.AlternateField;
 
                     if (h.BeforeTerm != null)
-                        param["hl.simple.pre"] = h.BeforeTerm;
+                        param[h.UseFastVectorHighlighter.IsTrue() ? "hl.tag.pre" : "hl.simple.pre"] = h.BeforeTerm;
 
                     if (h.AfterTerm != null)
-                        param["hl.simple.post"] = h.AfterTerm;
+                        param[h.UseFastVectorHighlighter.IsTrue() ? "hl.tag.post" : "hl.simple.post"] = h.AfterTerm;
 
                     if (h.RegexSlop.HasValue)
                         param["hl.regex.slop"] = Convert.ToString(h.RegexSlop.Value, CultureInfo.InvariantCulture);
@@ -321,13 +333,56 @@ namespace SolrNet.Impl {
                 yield return KVP("collapse.maxdocs", options.Collapse.MaxDocs.ToString());
         }
 
+		/// <summary>
+		/// Gets the Solr parameters for collapse queries
+		/// </summary>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public IEnumerable<KeyValuePair<string, string>> GetGroupingQueryOptions(QueryOptions options)
+		{
+			if (options.Grouping == null || options.Grouping.Fields.Count == 0)
+				yield break;
+
+			yield return KVP("group",true.ToString().ToLowerInvariant());
+
+			foreach (var groupfield in options.Grouping.Fields)
+			{
+				if (string.IsNullOrEmpty(groupfield))
+					continue;
+				yield return KVP("group.field", groupfield);
+			}
+			if (options.Grouping.Limit.HasValue)
+				yield return KVP("group.limit", options.Grouping.Limit.ToString());
+
+			if (options.Grouping.Offset.HasValue)
+				yield return KVP("group.offset", options.Grouping.Offset.ToString());
+
+			if (options.Grouping.Main.HasValue)
+				yield return KVP("group.main", options.Grouping.Main.ToString().ToLowerInvariant());
+
+			if (!string.IsNullOrEmpty(options.Grouping.Query))
+				yield return KVP("group.query", options.Grouping.Query);
+
+			if (!string.IsNullOrEmpty(options.Grouping.Func))
+				yield return KVP("group.func", options.Grouping.Func);
+
+			if (options.Grouping.OrderBy != null && options.Grouping.OrderBy.Count > 0)
+				yield return KVP("group.sort", string.Join(",", options.Grouping.OrderBy.Select(x => x.ToString()).ToArray()));
+
+            if (options.Grouping.Ngroups.HasValue)
+                yield return KVP("group.ngroups", options.Grouping.Ngroups.ToString().ToLowerInvariant());
+
+			yield return KVP("group.format", options.Grouping.Format.ToString().ToLowerInvariant());
+		
+		}
+
         /// <summary>
         /// Executes the query and returns results
         /// </summary>
         /// <returns>query results</returns>
         public ISolrQueryResults<T> Execute(ISolrQuery q, QueryOptions options) {
             var param = GetAllParameters(q, options);
-            string r = connection.Get("/select", param);
+            string r = connection.Get(Handler, param);
             var qr = resultParser.Parse(r);
             return qr;
         }

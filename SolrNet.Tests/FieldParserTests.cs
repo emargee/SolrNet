@@ -90,6 +90,24 @@ namespace SolrNet.Tests {
         }
 
         [Test]
+        public void DecimalFieldParser() {
+            var p = new DecimalFieldParser();
+            var xml = new XDocument();
+            xml.Add(new XElement("item", "6.66E13"));
+            var value = (decimal) p.Parse(xml.Root, typeof(decimal));
+            Assert.AreEqual(66600000000000m, value);
+        }
+
+        [Test]
+        [ExpectedException(typeof(OverflowException))]
+        public void DecimalFieldParser_overflow() {
+            var p = new DecimalFieldParser();
+            var xml = new XDocument();
+            xml.Add(new XElement("item", "6.66E53"));
+            var value = (decimal)p.Parse(xml.Root, typeof(decimal));
+        }
+
+        [Test]
         public void DefaultFieldParser_EnumAsString() {
             var p = new DefaultFieldParser();
             var xml = new XDocument();
@@ -120,6 +138,17 @@ namespace SolrNet.Tests {
             var r = p.Parse(xml.Root, typeof(Guid));
             var pg = (Guid)r;
             Assert.AreEqual(g, pg);
+        }
+
+        [Test]
+        public void SupportsNullableGuid() {
+            var p = new DefaultFieldParser();
+            var g = Guid.NewGuid();
+            var xml = new XDocument();
+            xml.Add(new XElement("str", g.ToString()));
+            var r = p.Parse(xml.Root, typeof(Guid?));
+            var pg = (Guid?)r;
+            Assert.AreEqual(g, pg.Value);
         }
     }
 }

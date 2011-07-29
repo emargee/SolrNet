@@ -60,6 +60,7 @@
       <HintPath>..\lib\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -67,8 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractSolrQuery.cs" />
+    <Compile Include="Commands\Parameters\GroupingParameters.cs" />
+    <Compile Include="ExtractParameters.cs" />
     <Compile Include="AddParameters.cs" />
     <Compile Include="CollapsedDocument.cs" />
+    <Compile Include="Commands\ExtractCommand.cs" />
     <Compile Include="Commands\GetSchemaCommand.cs" />
     <Compile Include="Commands\Parameters\CollapseParameters.cs" />
     <Compile Include="Commands\Parameters\DeleteByIdAndOrQueryParam.cs" />
@@ -80,10 +84,17 @@
     <Compile Include="CollapseResults.cs" />
     <Compile Include="Commands\RollbackCommand.cs" />
     <Compile Include="DateFacetingResult.cs" />
+    <Compile Include="GroupedResults.cs" />
+    <Compile Include="Impl\FacetQuerySerializers\SolrFacetPivotQuerySerializer.cs" />
     <Compile Include="Impl\ISolrDIHStatusParser.cs" />
+    <Compile Include="PivotFacetingResult.cs" />
+    <Compile Include="Impl\ResponseParsers\GroupingResponseParser.cs" />
+    <Compile Include="SolrFacetPivotQuery.cs" />
+    <Compile Include="SolrQueryByDistance.cs" />
     <Compile Include="SolrDIHStatus.cs" />
     <Compile Include="Impl\SolrDIHStatusParser.cs" />
     <Compile Include="Exceptions\TypeNotSupportedException.cs" />
+    <Compile Include="ExtractResponse.cs" />
     <Compile Include="FacetDateOther.cs" />
     <Compile Include="Impl\DocumentPropertyVisitors\AggregateDocumentVisitor.cs" />
     <Compile Include="Impl\DocumentPropertyVisitors\DefaultDocumentVisitor.cs" />
@@ -121,6 +132,7 @@
     <Compile Include="Impl\FieldSerializers\ToStringFieldSerializer.cs" />
     <Compile Include="Impl\FieldSerializers\TypeConvertingFieldSerializer.cs" />
     <Compile Include="Impl\ISelfSerializingQuery.cs" />
+    <Compile Include="Impl\ISolrExtractResponseParser.cs" />
     <Compile Include="Impl\ISolrCache.cs" />
     <Compile Include="Impl\ISolrDocumentActivator.cs" />
     <Compile Include="Impl\ISolrDocumentPropertyVisitor.cs" />
@@ -148,6 +160,7 @@
     <Compile Include="Impl\QuerySerializers\RangeQuerySerializer.cs" />
     <Compile Include="Impl\QuerySerializers\SelfSerializingQuerySerializer.cs" />
     <Compile Include="Impl\QuerySerializers\SingleTypeQuerySerializer.cs" />
+    <Compile Include="Impl\ResponseParsers\ExtractResponseParser.cs" />
     <Compile Include="Impl\ResponseParsers\CollapseResponseParser.cs" />
     <Compile Include="Impl\ResponseParsers\FacetsResponseParser.cs" />
     <Compile Include="Impl\ResponseParsers\HeaderResponseParser.cs" />
@@ -254,8 +267,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Impl\SolrConnection.cs" />
     <Compile Include="Exceptions\SolrNetException.cs" />
+    <Compile Include="Utils\HttpEncoder.cs" />
+    <Compile Include="Utils\HttpUtility.cs" />
     <Compile Include="Utils\IContainer.cs" />
     <Compile Include="Utils\Memoizer.cs" />
+    <Compile Include="Utils\NullableExtensions.cs" />
     <Compile Include="Utils\TypeHelper.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -44,8 +44,9 @@ namespace SolrNet {
 		IDictionary<string, ICollection<KeyValuePair<string, int>>> FacetFields { get; set; }
 
         /// <summary>
-        /// Server response eTag value
+        /// eTag returned from the current request
         /// </summary>
+        /// <remarks>The eTag for a Solr request is generated from a combination of the 'eTag seed' (in solrconfig), the index version and the index generation.</remarks>
         string ETag { get; set; }
 
         /// <summary>
